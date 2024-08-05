@@ -26,7 +26,7 @@ class Cosmetic(models.Model):
     )
 
     quantity = models.PositiveSmallIntegerField(
-        verbose_name='Кол-во билетов'
+        verbose_name='Кол-во товара'
     )
     is_active = models.BooleanField(
         default=True,

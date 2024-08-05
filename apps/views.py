@@ -10,3 +10,13 @@ def index_views(request):
             'cosmetics':cosmetics,
         }
     )
+
+def detail_views(request,pk):
+    cosmetic = Cosmetic.objects.get(id=pk)
+    return render(
+        request=request,
+        template_name='cosmo/shop-detail.html',
+        context={
+            'cosmetic':cosmetic,
+        }
+    )
