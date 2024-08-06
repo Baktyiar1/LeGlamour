@@ -3,6 +3,8 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+
 class Cosmetic(models.Model):
     title = models.CharField(
         'Название',
@@ -24,7 +26,6 @@ class Cosmetic(models.Model):
         'Изображение',
         upload_to='media/images/'
     )
-
     quantity = models.PositiveSmallIntegerField(
         verbose_name='Кол-во товара'
     )
@@ -43,7 +44,6 @@ class Cosmetic(models.Model):
 
     def __str__(self):
         return self.title
-
 
     class Meta:
         verbose_name = 'Товар'
