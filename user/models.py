@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+
 class MyUserManager(BaseUserManager):
     def create_user(self, phone_number, first_name, password=None, status=1):
         """
@@ -33,6 +34,7 @@ class MyUserManager(BaseUserManager):
         user.is_admin = True
         user.save(using=self._db)
         return user
+
 
 class MyUser(AbstractBaseUser):
     first_name = models.CharField(

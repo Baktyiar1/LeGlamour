@@ -177,7 +177,7 @@ https://templatemo.com/tm-559-zay-shop
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                            <li><a class="dropdown-item" href="">Профил</a></li>
+                            <li><a class="dropdown-item" href="">Профиль</a></li>
                             <li><a class="dropdown-item" href="">Выйти</a></li>
                         </ul>
                     </li>
@@ -200,13 +200,13 @@ https://templatemo.com/tm-559-zay-shop
                 <div class="flex-fill">
                     <ul class="nav navbar-nav d-flex justify-content-between mx-lg-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.html">Главная</a>
+                            <a class="nav-link" href="{% url 'index' %}">Главная</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="about.html">О нас</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="shop.html">Все товары</a>
+                            <a class="nav-link" href="{% url 'shop' %}">Все товары</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="contact.html">Contact</a>
