@@ -3,6 +3,14 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+class Category(models.Model):
+    title = models.CharField(
+        max_length=150
+    )
+    def __str__(self):
+        return self.title
+
 class Cosmetic(models.Model):
     title = models.CharField(
         'Название',
@@ -23,6 +31,10 @@ class Cosmetic(models.Model):
     image = models.ImageField(
         'Изображение',
         upload_to='media/images/'
+    )
+    category = models.ForeignKey(
+        Category,
+        on_delete=models.CASCADE
     )
 
     quantity = models.PositiveSmallIntegerField(
