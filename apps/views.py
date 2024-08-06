@@ -4,8 +4,10 @@ from .models import Cosmetic,Category
 from .forms import MyUpdateForm,CosmeticAddForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from django.contrib.auth.decorators import user_passes_test
 
 
+@user_passes_test(lambda u: u.is_authenticated and (u.is_admin or u.status == 2), login_url='index')
 def index_views(request):
     cosmetics = Cosmetic.objects.filter(is_active=True)[::-1][:3]
 
@@ -57,6 +59,9 @@ def shop_view(request):
     cosmetics = Cosmetic.objects.filter(is_active=True).order_by('-id')  # Сортировка по убыванию ID
     paginator = Paginator(cosmetics, 6)
     page_number = request.GET.get('page')
+
+    categories = Category.objects.all()
+
     try:
         page_obj = paginator.page(page_number)
     except PageNotAnInteger:
@@ -64,12 +69,31 @@ def shop_view(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
+    if request.method == 'POST':
+        form = CosmeticAddForm(request.POST,request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request,'Успешно создана')
+    form = CosmeticAddForm()
+
     return render(
         request=request,
         template_name='cosmo/shop.html',
         context={
             'cosmetics': page_obj,
             'page_obj': page_obj,
-            'page_range': paginator.page_range
+            'page_range': paginator.page_range,
+            'form': form,
+            'categories': categories
+
         }
+    )
+
+
+
+def about_views(request):
+
+    return render(
+        request=request,
+        template_name='cosmo/about.html'
     )
