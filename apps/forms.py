@@ -27,5 +27,5 @@ class CosmeticAddForm(forms.ModelForm):
             'brand',
             'image',
             'category',
-            'quantity'
+            'quantity',
         )

@@ -1,16 +1,126 @@
 {% extends 'base.html' %}
 {% load static %}
- {% block content %}
+
+
+
+<style>
+     /* Стиль для модального окна */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+    transform: translateY(-20px);
+}
+
+.modal-content.show {
+    transform: translateY(0);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.close {
+    color: #aaa;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Стили для формы */
+.form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-group input[type="file"] {
+    padding: 6px;
+}
+
+.form-group textarea {
+    resize: vertical;
+    height: 120px;
+}
+
+.form-group button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.form-group button:hover {
+    background-color: #0056b3;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+</style>
+
+{% block content %}
 <body>
-
-    <!-- Header -->
-
-    <!-- Close Header -->
-
-    <!-- Modal -->
-
-
-
     <!-- Start Banner Hero -->
     <div id="template-mo-zay-hero-carousel" class="carousel slide" data-bs-ride="carousel">
         <ol class="carousel-indicators">
@@ -87,8 +197,13 @@
             <i class="fas fa-chevron-right"></i>
         </a>
     </div>
-    <!-- End Banner Hero -->
+    <br>
 
+        <center>
+            {% if request.user.status == 2 or request.user.is_admin %}
+                <button class="nav-link:btn btn-primary" id="myBtnadd">Добавить товар</button>
+            {% endif %}
+        </center>
 
     <!-- Start Categories of The Month -->
     <section class="container py-5">
@@ -139,7 +254,7 @@
                 <div class="col-12 col-md-4 mb-4">
                     <div class="card h-100">
                         <a href="{% url 'detail' cosmetic.id %}">
-                            <img src="{{ cosmetic.image.url }}" class="card-img-top" alt="...">
+                            <img src="{{ cosmetic.image.url }}" class="card-img-top" alt="..."style="width:414px; height:311px;">
                         </a>
                         <div class="card-body">
                             <ul class="list-unstyled d-flex justify-content-between">
@@ -155,7 +270,7 @@
                             </ul>
                             <a href="{% url 'detail' cosmetic.id %}" class="h2 text-decoration-none text-dark">{{ cosmetic.title }}</a>
                             <p class="card-text">
-                                {{ cosmetic.description|truncatechars:123 }}
+                                {{ cosmetic.description|truncatechars:34 }}
                             </p>
 
                         </div>
@@ -166,9 +281,87 @@
             </div>
         </div>
     </section>
-    <!-- End Featured Product -->
 
-    <!-- End Script -->
+<div id="myModaladd" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <div class="modal-header">
+      <span class="close">&times;</span>
+      <h2>Добавить товар</h2>
+    </div>
+    <div class="modal-body">
+      <form method="post" action="." enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+          <label>{{ form.title.label }}</label>
+          {{ form.title }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.category.label }}</label>
+          {{ form.category }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.description.label }}</label>
+          {{ form.description }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.price.label }}</label>
+          {{ form.price }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.brand.label }}</label>
+          {{ form.brand }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.image.label }}</label>
+          {{ form.image }}
+        </div>
+
+        <div class="form-group">
+          <label>{{ form.quantity.label }}</label>
+          {{ form.quantity }}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Создать</button>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Получаем элементы
+  var modal = document.getElementById("myModaladd");
+  var btn = document.getElementById("myBtnadd");
+  var span = document.getElementsByClassName("close")[0];
+
+  // Когда пользователь нажимает на кнопку, открываем модальное окно
+  btn.onclick = function() {
+    modal.style.display = "block";
+    modal.classList.add('show');
+  }
+
+  // Когда пользователь нажимает на <span> (x), закрываем модальное окно
+  span.onclick = function() {
+    modal.style.display = "none";
+    modal.classList.remove('show');
+  }
+
+  // Когда пользователь нажимает в любое место вне модального окна, закрываем его
+  window.onclick = function(event) {
+    if (event.target === modal) {
+      modal.style.display = "none";
+      modal.classList.remove('show');
+    }
+  }
+</script>
+
 </body>
 {% endblock %}
 
