@@ -3,13 +3,14 @@ from django.contrib import messages
 from .models import Cosmetic,Category
 from .forms import MyUpdateForm,CosmeticAddForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from user.forms import RegisterUserForm
 from django.contrib.auth.decorators import user_passes_test
 
 
 @user_passes_test(lambda u: u.is_authenticated and (u.is_admin or u.status == 2), login_url='index')
 def index_views(request):
     cosmetics = Cosmetic.objects.filter(is_active=True)[::-1][:3]
+    register_views = RegisterUserForm()
 
     if request.method == 'POST':
         form = CosmeticAddForm(request.POST,request.FILES)
@@ -22,10 +23,13 @@ def index_views(request):
         request=request,
         template_name='cosmo/index.html',
         context={
-            'cosmetics':cosmetics,
+            'cosmetics': cosmetics,
+            'register_form': register_views,
             'form': form
         }
     )
+
+
 
 def detail_views(request,pk):
     cosmetic = get_object_or_404(Cosmetic,id=pk)

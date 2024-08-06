@@ -102,8 +102,8 @@ https://templatemo.com/tm-559-zay-shop
                         </a>
 
                         <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
-                            <li><a class="dropdown-item" href="">Профиль</a></li>
-                            <li><a class="dropdown-item" href="">Выйти</a></li>
+                            <li><a class="dropdown-item" href="{% url 'register' %}">Регистрация</a></li>
+                            <li><a class="dropdown-item" href="{% url 'login' %}">Авторизация</a></li>
                         </ul>
                     </li>
                 </div>
@@ -167,13 +167,10 @@ https://templatemo.com/tm-559-zay-shop
 
 
 
-
-
-
  {% block content %}
 
  {% endblock %}
-
+    <!-- Start Footer -->
     <footer class="bg-dark" id="tempaltemo_footer">
         <div class="container">
             <div class="row">
@@ -264,7 +261,6 @@ https://templatemo.com/tm-559-zay-shop
                 </div>
             </div>
         </div>
-
     </footer>
 
 
