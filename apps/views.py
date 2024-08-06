@@ -7,7 +7,7 @@ from user.forms import RegisterUserForm
 from django.contrib.auth.decorators import user_passes_test
 
 
-@user_passes_test(lambda u: u.is_authenticated and (u.is_admin or u.status == 2), login_url='index')
+# @user_passes_test(lambda u: u.is_authenticated and (u.is_admin or u.status == 2))
 def index_views(request):
     cosmetics = Cosmetic.objects.filter(is_active=True)[::-1][:3]
     register_views = RegisterUserForm()

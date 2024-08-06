@@ -200,7 +200,7 @@
     <br>
 
         <center>
-            {% if request.user.status == 2 or request.user.is_admin %}
+            {% if not request.user.status == 2 or request.user.is_admin %}
                 <button class="nav-link:btn btn-primary" id="myBtnadd">Добавить товар</button>
             {% endif %}
         </center>

@@ -282,7 +282,7 @@ textarea:focus {
                 <div class="card">
                     <div class="card-body">
 
-                        {% if request.user.status == 2 or request.user.is_admin %}
+                        {% if not request.user.status == 2 or request.user.is_admin %}
                         <div class="container">
                         <!-- Buttons to open modals -->
                               <div class="button-group">
