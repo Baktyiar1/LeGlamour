@@ -4,13 +4,14 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class Category(models.Model):
     title = models.CharField(
         max_length=150
     )
+
     def __str__(self):
         return self.title
-
 
 
 class Cosmetic(models.Model):
@@ -58,55 +59,80 @@ class Cosmetic(models.Model):
     def __str__(self):
         return self.title
 
-
     class Meta:
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
 
 
-class Order(models.Model):
+class Cart(models.Model):
     user = models.ForeignKey(
         User,
-        on_delete=models.PROTECT,
-
+        on_delete=models.CASCADE,
         verbose_name='Пользователь'
-    )
-
-    cosmetic = models.ForeignKey(
-        Cosmetic,
-        on_delete=models.PROTECT,
-
-        verbose_name='Косметика'
-    )
-    quantity = models.PositiveSmallIntegerField(
-        verbose_name='Кол-во товаров'
     )
     total_price = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        verbose_name='Сумма к оплате'
+        verbose_name='Общая сумма',
+        default=0.00
     )
-    status = models.PositiveSmallIntegerField(
-        choices=[
-            (1, 'Заказ в обработке'),
-            (2, 'Заказ оплачен'),
-            (3, 'Заказ отменен')
-
-        ],
-        default=1,
-        verbose_name='Статус'
-    )
-    create_date = models.DateTimeField(
-        'Дата создание объекта',
-        auto_now_add=True
-    )
-    delivery_address = models.CharField(
-        verbose_name='Адрес доставки',
-        max_length=200
-    )
-    order_comment = models.TextField(
-        verbose_name='Комментарий к заказу'
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
     )
 
     def __str__(self):
-        return str(self.user)
+        return f'Cart of {self.user.first_name}'
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(
+        Cart,
+        related_name='items',
+        on_delete=models.CASCADE,
+        verbose_name='Корзина'
+    )
+    cosmetic = models.ForeignKey(
+        Cosmetic,
+        on_delete=models.CASCADE,
+        verbose_name='Косметика'
+    )
+    quantity = models.PositiveSmallIntegerField(
+        verbose_name='Количество',
+        default=1
+    )
+    price = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name='Цена'
+    )
+
+    def __str__(self):
+        return f'{self.quantity} x {self.cosmetic.title} in {self.cart}'
+
+
+class Order(models.Model):
+    cart = models.ForeignKey(
+        Cart,
+        on_delete=models.CASCADE,
+        verbose_name='Корзина',
+        default=1
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        verbose_name='Пользователь',
+        default=1
+    )
+    total_price = models.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        verbose_name='Сумма корзины'
+    )
+
+    def __str__(self):
+        return str(self.cart)
+
+    class Meta:
+        verbose_name = 'Заказ'
+        verbose_name_plural = 'Заказы'

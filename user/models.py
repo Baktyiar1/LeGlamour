@@ -29,7 +29,7 @@ class MyUserManager(BaseUserManager):
             phone_number=phone_number,
             first_name=first_name,
             password=password,
-            status=1
+            status=1  # Default status for superuser
         )
         user.is_admin = True
         user.save(using=self._db)
@@ -81,7 +81,7 @@ class MyUser(AbstractBaseUser):
     REQUIRED_FIELDS = ['first_name']
 
     def __str__(self):
-        return f"{self.last_name} {self.first_name}"
+        return f"{self.first_name} {self.last_name or ''}"
 
     def has_perm(self, perm, obj=None):
         """Does the user have a specific permission?"""
