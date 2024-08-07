@@ -4,11 +4,16 @@ from .models import Cosmetic,Category
 from .forms import MyUpdateForm,CosmeticAddForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from user.forms import RegisterUserForm
+from .filters import CosmeticFilters
+import logging
 from django.contrib.auth.decorators import user_passes_test
 
+from django.contrib.auth import get_user_model
 
-# @user_passes_test(lambda u: u.is_authenticated and (u.is_admin or u.status == 2))
+User = get_user_model()
+
 def index_views(request):
+
     cosmetics = Cosmetic.objects.filter(is_active=True)[::-1][:3]
     register_views = RegisterUserForm()
 
@@ -30,8 +35,9 @@ def index_views(request):
     )
 
 
-
+# @user_passes_test(lambda u: u.is_authenticated and (u.is_admin or u.status == 2), login_url='register')
 def detail_views(request,pk):
+
     cosmetic = get_object_or_404(Cosmetic,id=pk)
 
     recommendations = Cosmetic.objects.filter(category=cosmetic.category)
@@ -58,10 +64,15 @@ def detail_views(request,pk):
         }
     )
 
-
+logger = logging.getLogger(__name__)
 def shop_view(request):
-    cosmetics = Cosmetic.objects.filter(is_active=True).order_by('-id')  # Сортировка по убыванию ID
-    paginator = Paginator(cosmetics, 6)
+    cosmetic_filter = CosmeticFilters(request.GET,queryset=Cosmetic.objects.filter(is_active=True))
+    listings = cosmetic_filter.qs
+    print(listings)
+    logger.debug(f'Request GET params: {request.GET}')
+    logger.debug(f'Filtered queryset: {listings}')
+
+    paginator = Paginator(listings, 6)
     page_number = request.GET.get('page')
 
     categories = Category.objects.all()
@@ -73,13 +84,6 @@ def shop_view(request):
     except EmptyPage:
         page_obj = paginator.page(paginator.num_pages)
 
-    if request.method == 'POST':
-        form = CosmeticAddForm(request.POST,request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request,'Успешно создана')
-    form = CosmeticAddForm()
-
     return render(
         request=request,
         template_name='cosmo/shop.html',
@@ -87,8 +91,8 @@ def shop_view(request):
             'cosmetics': page_obj,
             'page_obj': page_obj,
             'page_range': paginator.page_range,
-            'form': form,
-            'categories': categories
+            'categories': categories,
+            'filter': cosmetic_filter,
 
         }
     )

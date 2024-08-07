@@ -73,11 +73,31 @@
                     </div>
                     <div class="col-md-6 pb-4">
                         <div class="d-flex">
-                            <select class="form-control">
-                                <option>Featured</option>
-                                <option>A to Z</option>
-                                <option>Item</option>
-                            </select>
+
+
+
+<div class="col-md-6 pb-4">
+    <form method="get" action="{% url 'shop' %}" class="form-inline">
+        <div class="form-group">
+            <label for="filter" class="sr-only">Фильтр</label>
+            <select id="filter" name="filter" class="form-control">
+                <option value="">Выберите фильтр</option>
+                <option value="title">Название</option>
+                <option value="brand">Бренд</option>
+                <option value="price__lt">Цена ниже</option>
+                <option value="price__gt">Цена выше</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <input type="text" name="filter_value" class="form-control" placeholder="Введите значение" value="{{ request.GET.filter_value }}">
+        </div>
+        <button type="submit" class="btn btn-primary">Применить</button>
+    </form>
+</div>
+
+
+
+
                         </div>
                     </div>
                 </div>

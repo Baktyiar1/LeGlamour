@@ -1,125 +1,106 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
-
+{% block content %}
 <style>
-     /* Стиль для модального окна */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0);
-    background-color: rgba(0,0,0,0.4);
-    transition: opacity 0.3s ease;
-}
+      /* Стиль для фона модального окна */
+        .modal {
+            display: none; /* Скрываем модальное окно по умолчанию */
+            position: fixed; /* Закрепляем модальное окно на экране */
+            z-index: 1000; /* Поверх всего остального контента */
+            left: 0;
+            top: 0;
+            width: 100%; /* Полная ширина экрана */
+            height: 100%; /* Полная высота экрана */
+            overflow: auto; /* Добавляем прокрутку, если необходимо */
+            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+        }
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    border-radius: 8px;
-    width: 80%;
-    max-width: 600px;
-    transition: transform 0.3s ease;
-    transform: translateY(-20px);
-}
+        /* Стили для содержимого модального окна */
+        .modal-content {
+            background-color: #fff; /* Белый фон */
+            margin: 15% auto; /* Центрирование по вертикали и горизонтали */
+            padding: 20px; /* Отступы внутри модального окна */
+            border-radius: 5px; /* Скругленные углы */
+            width: 80%; /* Ширина модального окна */
+            max-width: 600px; /* Максимальная ширина */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Тень вокруг модального окна */
+        }
 
-.modal-content.show {
-    transform: translateY(0);
-}
+        /* Стили для шапки модального окна */
+        .modal-header {
+            display: flex; /* Используем Flexbox для расположения элементов */
+            justify-content: space-between; /* Размещаем элементы по краям */
+            align-items: center; /* Выравнивание по вертикали */
+            border-bottom: 1px solid #ddd; /* Разделительная линия */
+            padding-bottom: 10px; /* Отступ снизу */
+        }
 
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #ddd;
-}
+        /* Стили для кнопки закрытия модального окна */
+        .close {
+            color: #aaa; /* Цвет кнопки закрытия */
+            font-size: 28px; /* Размер шрифта */
+            font-weight: bold; /* Жирный шрифт */
+            cursor: pointer; /* Курсор в виде указателя */
+        }
 
-.close {
-    color: #aaa;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .close:hover,
+        .close:focus {
+            color: black; /* Цвет при наведении */
+            text-decoration: none; /* Убираем подчеркивание */
+            cursor: pointer; /* Курсор в виде указателя */
+        }
 
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
+        /* Стили для тела модального окна */
+        .modal-body {
+            padding: 20px 0; /* Отступы сверху и снизу */
+        }
 
-/* Стили для формы */
-.form-container {
-    background: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-}
+        /* Стили для формы и её элементов */
+        .form-group {
+            margin-bottom: 15px; /* Отступ снизу */
+        }
 
-.form-group {
-    margin-bottom: 15px;
-}
+        .form-group label {
+            display: block; /* Обеспечиваем, что метки занимают всю ширину */
+            margin-bottom: 5px; /* Отступ снизу */
+        }
 
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #333;
-}
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%; /* Ширина на всю доступную ширину */
+            padding: 8px; /* Отступы внутри элементов формы */
+            border: 1px solid #ddd; /* Рамка элемента формы */
+            border-radius: 4px; /* Скругленные углы */
+            box-sizing: border-box; /* Включаем границы и отступы в ширину элемента */
+        }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
+        .btn {
+            background-color: #007bff; /* Фон кнопки */
+            color: #fff; /* Цвет текста кнопки */
+            border: none; /* Убираем рамку */
+            padding: 10px 20px; /* Отступы внутри кнопки */
+            text-align: center; /* Выравнивание текста по центру */
+            text-decoration: none; /* Убираем подчеркивание текста */
+            display: inline-block; /* Отображение как встроенный блок */
+            font-size: 16px; /* Размер шрифта */
+            margin: 10px 0; /* Отступы сверху и снизу */
+            cursor: pointer; /* Курсор в виде указателя */
+            border-radius: 4px; /* Скругленные углы */
+            transition: background-color 0.3s; /* Плавный переход цвета */
+        }
 
-.form-group input[type="file"] {
-    padding: 6px;
-}
+        .btn-primary {
+            background-color: #007bff; /* Основной цвет кнопки */
+        }
 
-.form-group textarea {
-    resize: vertical;
-    height: 120px;
-}
+        .btn-primary:hover {
+            background-color: #0056b3; /* Цвет кнопки при наведении */
+        }
 
-.form-group button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.form-group button:hover {
-    background-color: #0056b3;
-}
-
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-    border-color: #007bff;
-    outline: none;
-}
 </style>
 
-{% block content %}
 <body>
     <!-- Start Banner Hero -->
     <div id="template-mo-zay-hero-carousel" class="carousel slide" data-bs-ride="carousel">
@@ -200,8 +181,8 @@
     <br>
 
         <center>
-            {% if not request.user.status == 2 or request.user.is_admin %}
-                <button class="nav-link:btn btn-primary" id="myBtnadd">Добавить товар</button>
+            {% if request.user.status == 2 or request.user.is_admin %}
+                <button class="btn btn-primary" id="myBtnadd">Добавить товар</button>
             {% endif %}
         </center>
 

@@ -25,48 +25,58 @@ https://templatemo.com/tm-559-zay-shop
 </head>
 
 <style>
-.toast-container {
-    position: fixed;
-    top: 20px; /* Расположение от верхнего края */
-    right: 20px; /* Расположение от правого края */
-    z-index: 1050; /* Чтобы тосты были выше других элементов */
-}
+            .toast-container {
+                position: fixed;
+                top: 20px; /* Расположение от верхнего края */
+                right: 20px; /* Расположение от правого края */
+                z-index: 1050; /* Чтобы тосты были выше других элементов */
+            }
 
             .toast {
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
-            margin-bottom: 0.5rem; /* Отступ между тостами */
-            color: #fff; /* Белый цвет текста по умолчанию */
-            max-width: 240px;
-        }
+                opacity: 1;
+                transition: opacity 0.5s ease-in-out;
+                margin-bottom: 0.5rem; /* Отступ между тостами */
+                color: #fff; /* Белый цвет текста по умолчанию */
+                max-width: 230px; /* Уменьшенный максимальный размер тоста */
+                font-size: 7px; /* Уменьшенный размер шрифта */
+                padding: 0.5rem 0.75rem; /* Уменьшенные внутренние отступы */
+            }
 
-        .toast-body.success {
-            background-color: #28a745; /* Зеленый цвет для успешных сообщений */
-            color: #fff; /* Белый цвет текста на зеленом фоне */
-        }
+            .toast-body.success {
+                background-color: #28a745; /* Зеленый цвет для успешных сообщений */
+                color: #fff; /* Белый цвет текста на зеленом фоне */
+            }
 
-        .toast-body.error {
-            background-color: #dc3545; /* Красный цвет для ошибок */
-            color: #fff; /* Белый цвет текста на красном фоне */
-        }
+            .toast-body.error {
+                background-color: #dc3545; /* Красный цвет для ошибок */
+                color: #fff; /* Белый цвет текста на красном фоне */
+            }
+
+            .toast-header .btn-close {
+                font-size: 0.75rem; /* Уменьшенный размер кнопки закрытия */
+            }
+
+
+
+
+
+.nav-link {
+    font-size: 1.25rem; /* Увеличьте размер шрифта */
+    padding: 0.75rem 1.25rem; /* Увеличьте отступы для кнопки */
+    color: white; /* Белый цвет текста */
+
+}
+
+
+
+.dropdown-menu {
+    background-color: #f8f9fa; /* Цвет фона выпадающего меню, измените по вашему желанию */
+}
+
 
 </style>
 
 <body>
-        {% if messages %}
-            <div class="toast-container">
-                {% for message in messages %}
-                    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="toast-header">
-                            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-                        </div>
-                        <div class="toast-body {% if message.tags == 'error' %}error{% else %}success{% endif %}">
-                            {{ message }}
-                        </div>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
 
 
     <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -95,20 +105,36 @@ https://templatemo.com/tm-559-zay-shop
                     <i class="fa fa-phone mx-2"></i>
                     <a class="navbar-sm-brand text-light text-decoration-none" href="tel:010-020-0340">010-020-0340</a>
                 </div>
-                <div>
+
+
+                <div class="navbar-nav">
+                {% if request.user.is_authenticated %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle btn-lg text-white" href="#" id="navbarLightDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {% if request.user.last_name %}
+                                {{ request.user.last_name }}
+                            {% endif %}
+                            {{ request.user.first_name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Выйти</a></li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle btn-lg text-white: btn btn-success" href="#" id="navbarLightDropdownMenuLinkakk" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Мой аккаунт
                         </a>
-                        {% if request.user.is_authenticated %}
-                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLink">
+                        <ul class="dropdown-menu dropdown-menu-light" aria-labelledby="navbarLightDropdownMenuLinkakk">
                             <li><a class="dropdown-item" href="{% url 'register' %}">Регистрация</a></li>
                             <li><a class="dropdown-item" href="{% url 'login' %}">Авторизация</a></li>
-
                         </ul>
-                        {% endif %}
                     </li>
-                </div>
+                {% endif %}
+            </div>
+
+
+
             </div>
         </div>
     </nav>
@@ -135,9 +161,7 @@ https://templatemo.com/tm-559-zay-shop
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'shop' %}">Все товары</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="contact.html">Contact</a>
-                        </li>
+
                     </ul>
                 </div>
                 <div class="navbar align-self-center d-flex">
@@ -266,6 +290,21 @@ https://templatemo.com/tm-559-zay-shop
     </footer>
 
 
+{% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+            <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+                <div class="toast-body {% if message.tags == 'error' %}error{% else %}success{% endif %}">
+                    {{ message }}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var toasts = document.querySelectorAll('.toast');
@@ -279,9 +318,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 3000); // 3000 миллисекунд = 3 секунды
     });
 });
-
-
 </script>
+
 
 
 
