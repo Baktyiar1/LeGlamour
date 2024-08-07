@@ -8,8 +8,9 @@ from .forms import MyUpdateForm, CosmeticAddForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from user.forms import RegisterUserForm
 from .filters import CosmeticFilters
-import logging
-from django.contrib.auth.decorators import user_passes_test
+
+
+from django.contrib.auth.decorators import user_passes_test, login_required
 
 User = get_user_model()
 
@@ -66,18 +67,19 @@ def detail_views(request,pk):
         }
     )
 
-logger = logging.getLogger(__name__)
 def shop_view(request):
     cosmetic_filter = CosmeticFilters(request.GET,queryset=Cosmetic.objects.filter(is_active=True))
     listings = cosmetic_filter.qs
-    print(listings)
-    logger.debug(f'Request GET params: {request.GET}')
-    logger.debug(f'Filtered queryset: {listings}')
+
+    category_id = request.GET.get('category')
+    if category_id:
+        listings = listings.filter(category_id=category_id)
+
+    categories = Category.objects.all()
 
     paginator = Paginator(listings, 6)
     page_number = request.GET.get('page')
 
-    categories = Category.objects.all()
 
     try:
         page_obj = paginator.page(page_number)

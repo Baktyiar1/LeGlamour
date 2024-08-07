@@ -249,7 +249,7 @@
                                 </li>
                                 <li class="text-muted text-right">{{ cosmetic.price }} сом</li>
                             </ul>
-                            <a href="{% url 'detail' cosmetic.id %}" class="h2 text-decoration-none text-dark">{{ cosmetic.title }}</a>
+                            <a href="{% url 'detail' cosmetic.id %}" class="h2 text-decoration-none text-dark">{{ cosmetic.title|truncatechars:20 }}</a>
                             <p class="card-text">
                                 {{ cosmetic.description|truncatechars:34 }}
                             </p>

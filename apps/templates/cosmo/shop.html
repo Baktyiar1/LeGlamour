@@ -21,86 +21,50 @@
     <div class="container py-5">
         <div class="row">
 
-            <div class="col-lg-3">
-                <h1 class="h2 pb-4">Categories</h1>
-                <ul class="list-unstyled templatemo-accordion">
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Gender
-                            <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul class="collapse show list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Men</a></li>
-                            <li><a class="text-decoration-none" href="#">Women</a></li>
-                        </ul>
-                    </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Sale
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul id="collapseTwo" class="collapse list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Sport</a></li>
-                            <li><a class="text-decoration-none" href="#">Luxury</a></li>
-                        </ul>
-                    </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Product
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul id="collapseThree" class="collapse list-unstyled pl-3">
-                            {% for category in categories %}
-                            <li><a class="text-decoration-none" href="#">{{ category }}</a></li>
-                            {% endfor %}
+<div class="col-lg-3">
+    <form method="get" action="{% url 'shop' %}" class="form-inline">
+    <div class="col-md-6 pb-4">
+    <h1 class="h2 pb-4">Категории</h1>
+    <select id="category" name="category" class="form-control">
+                        <option value="">Все категории</option>
+                        {% for category in categories %}
+                        <option value="{{ category.id }}" {% if category.id == request.GET.category|stringformat:"i" %}selected{% endif %}>{{ category.title }}</option>
+                        {% endfor %}
+                    </select>
+    </div>
+    <div class="col-md-6 pb-4">
+        <h1 class="h2 pb-4">Фильтрации</h1>
 
-                        </ul>
-                    </li>
-                </ul>
+            <div class="form-group mr-2">
+                <div>
+                    {{ filter.form.title.label }}
+                    {{ filter.form.title }}
+                </div>
+                {{ filter.form.brand.label }}
+                {{ filter.form.brand }}
+                <div>
+                    {{ filter.form.price__lt.label }}
+                    {{ filter.form.price__lt }}
+                </div>
+                <div>
+                    {{ filter.form.price__gt.label }}
+                    {{ filter.form.price__gt }}
+                </div>
+                </form>
             </div>
+            <button type="submit" class="btn btn-primary">Применить</button>
+    </div>
+
+</div>
+
 
             <div class="col-lg-9">
                 <div class="row">
                     <div class="col-md-6">
-                        <ul class="list-inline shop-top-menu pb-3 pt-1">
-                            <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none mr-3" href="#">All</a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none mr-3" href="#">Men's</a>
-                            </li>
-                            <li class="list-inline-item">
-                                <a class="h3 text-dark text-decoration-none" href="#">Women's</a>
-                            </li>
-                        </ul>
+
                     </div>
                     <div class="col-md-6 pb-4">
                         <div class="d-flex">
-
-
-
-<div class="col-md-6 pb-4">
-    <form method="get" action="{% url 'shop' %}" class="form-inline">
-        <div class="form-group">
-            <label for="filter" class="sr-only">Фильтр</label>
-            <select id="filter" name="filter" class="form-control">
-                <option value="">Выберите фильтр</option>
-                <option value="title">Название</option>
-                <option value="brand">Бренд</option>
-                <option value="price__lt">Цена ниже</option>
-                <option value="price__gt">Цена выше</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <input type="text" name="filter_value" class="form-control" placeholder="Введите значение" value="{{ request.GET.filter_value }}">
-        </div>
-        <button type="submit" class="btn btn-primary">Применить</button>
-    </form>
-</div>
-
-
-
-
                         </div>
                     </div>
                 </div>

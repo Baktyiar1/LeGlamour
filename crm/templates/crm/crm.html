@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+/* Основные стили для таблицы */
+table {
+  font-family: Arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 20px 0;
+}
+
+/* Стили для ячеек таблицы */
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 12px; /* Увеличены отступы для лучшего восприятия */
+}
+
+/* Стили для заголовков таблицы */
+th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Стили для строк таблицы */
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* Используем светлее цвет для чередования */
+}
+
+tr:hover {
+  background-color: #f1f1f1; /* Подсветка строки при наведении */
+}
+
+/* Стили для последней строки таблицы */
+tr:last-child {
+  border-bottom: 2px solid #ddd; /* Граница внизу последней строки */
+}
+
+
+
+
+
+</style>
+
+<body>
+
+    <!-- Start Content Page -->
+    <div class="container-fluid bg-light py-5">
+        <div class="col-md-6 m-auto text-center">
+            <h1 class="h1">Contact Us</h1>
+            <p>
+                Proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                Lorem ipsum dolor sit amet.
+            </p>
+        </div>
+    </div>
+
+
+<section class="events-section section-bg section-padding" id="section_4">
+                <div class="container mt-4">
+                    <h2 class="table-custom-header">Список:</h2>
+                    <h3>Сумма: {{ total }} сом</h3>
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Пользователь</th>
+                                <th>Дата создания</th>
+                                <th>Общая сумма</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for crm_list in crm_lists %}
+                            <tr>
+                                <td>{{ crm_list.user }}</td>
+                                <td>
+
+                                </td>
+                                <td>{{ crm_list.cart.created_at }}</td>
+                                <td>{{ crm_list.total_price }}</td>
+
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+
+</body>
+{% endblock %}
