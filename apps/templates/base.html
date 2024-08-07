@@ -15,16 +15,100 @@
     <!-- Load fonts style after rendering the layout styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;700;900&display=swap">
     <link rel="stylesheet" href="{% static 'assets/css/fontawesome.min.css' %}">
-<!--
 
-TemplateMo 559 Zay Shop
-
-https://templatemo.com/tm-559-zay-shop
-
--->
 </head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
+    .cart-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.cart-modal-content {
+    background-color: #f4f4f4;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.cart-close-btn {
+    color: #888;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.cart-close-btn:hover,
+.cart-close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+h2 {
+    color: #4CAF50; /* Зеленый цвет заголовка */
+}
+
+/* Стили для таблицы корзины */
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cart-table th, .cart-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.cart-table th {
+    background-color: #4CAF50; /* Зеленый цвет заголовка таблицы */
+    color: white;
+}
+
+.cart-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.cart-table tfoot td {
+    font-weight: bold;
+    background-color: #e8f5e9; /* Светло-зеленый цвет для итогов */
+}
+
+/* Кнопка оформления заказа */
+.cart-checkout-btn {
+    background-color: #4CAF50; /* Зеленый цвет кнопки */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.cart-checkout-btn:hover {
+    background-color: #45a049; /* Более тёмный зелёный при наведении */
+}
+
+.cart-item-img {
+    width: 30%; /* Устанавливаем ширину изображения на 20% от его оригинального размера */
+    height: auto; /* Высота автоматически масштабируется в соответствии с шириной */
+}
+
 .toast-container {
     position: fixed;
     top: 20px; /* Расположение от верхнего края */
@@ -188,7 +272,7 @@ https://templatemo.com/tm-559-zay-shop
  <nav class="navbar navbar-expand-lg navbar-light shadow">
         <div class="container d-flex justify-content-between align-items-center">
 
-            <a class="navbar-brand text-success logo h1 align-self-center" href="index.html">
+            <a class="navbar-brand text-success logo h1 align-self-center" href="{% url 'index' %}">
                 Zay
             </a>
 
@@ -213,7 +297,7 @@ https://templatemo.com/tm-559-zay-shop
                         </li>
                         <li class="nav-item">
                             <!-- Trigger/Open The Modal -->
-                            <button id="myBtnadd">Добавить</button>
+                            <button class="nav-link" id="myBtnadd">Добавить</button>
                         </li>
                     </ul>
                 </div>
@@ -226,12 +310,12 @@ https://templatemo.com/tm-559-zay-shop
                             </div>
                         </div>
                     </div>
-                    <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
+                    <a class="nav-icon d-none d-lg-inline" href="#" data-bs-target="#templatemo_search">
                         <i class="fa fa-fw fa-search text-dark mr-2"></i>
                     </a>
-                    <a class="nav-icon position-relative text-decoration-none" href="#">
+                    <a id="openCartBtn" class="nav-icon position-relative text-decoration-none" href="#">
                         <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
-                        <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
+                        <span id="cartItemCount" class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">0</span>
                     </a>
                     <a class="nav-icon position-relative text-decoration-none" href="#">
                         <i class="fa fa-fw fa-user text-dark mr-3"></i>
@@ -242,6 +326,28 @@ https://templatemo.com/tm-559-zay-shop
 
         </div>
     </nav>
+
+        <div id="cartModal" class="cart-modal">
+    <div class="cart-modal-content">
+        <span class="cart-close-btn">&times;</span>
+        <h2>Ваша корзина</h2>
+        <table class="cart-table">
+            <tbody id="cartItemsContainer">
+                <!-- Товары будут добавлены сюда динамически -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">Итого</td>
+                    <td id="cartTotal">0.00 сом</td>
+                </tr>
+            </tfoot>
+        </table>
+        <form action="{% url 'create_order' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" style="background-color: green; color: white;" class="nav-link" onclick="closeCart()">&times; Купить</button>
+        </form>
+    </div>
+</div>
 
 
 
@@ -402,6 +508,26 @@ https://templatemo.com/tm-559-zay-shop
     <!--            всплывающие окна-->
 
 <script>
+    document.addEventListener('DOMContentLoaded', () => {
+    const openCartBtn = document.getElementById('openCartBtn');
+    const cartModal = document.getElementById('cartModal');
+    const closeCartBtn = cartModal.querySelector('.cart-close-btn');
+
+    openCartBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        cartModal.style.display = 'block';
+    });
+
+    closeCartBtn.addEventListener('click', () => {
+        cartModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === cartModal) {
+            cartModal.style.display = 'none';
+        }
+    });
+});
 // Get the modal
 var modal = document.getElementById("myModaladd");
 
@@ -427,21 +553,54 @@ window.onclick = function(event) {
     modal.style.display = "none";
   }
 }
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    var toasts = document.querySelectorAll('.toast');
-    toasts.forEach(function (toast) {
-        var bsToast = new bootstrap.Toast(toast);
-        bsToast.show();
+function closeCart() {
+    const cartModal = document.getElementById('cartModal');
+    cartModal.style.display = 'none';
+}
 
-        // Автоматически скрывать тост через 3 секунды
-        setTimeout(function () {
-            bsToast.hide();
-        }, 3000); // 3000 миллисекунд = 3 секунды
+document.addEventListener('DOMContentLoaded', () => {
+    const openCartBtn = document.getElementById('openCartBtn');
+    const cartModal = document.getElementById('cartModal');
+    const closeCartBtn = cartModal.querySelector('.cart-close-btn');
+    const cartItemsContainer = document.getElementById('cartItemsContainer');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartItemCount = document.getElementById('cartItemCount');
+
+    openCartBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        fetch('{% url "get_cart_data" %}')
+            .then(response => response.json())
+            .then(data => {
+                cartItemsContainer.innerHTML = '';
+                cartTotal.textContent = `${data.total_price.toFixed(2)} сом`;
+                cartItemCount.textContent = data.items.length;
+
+                data.items.forEach(item => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><img src="${item.image_url}" alt="${item.title}" class="cart-item-img"></td>
+                        <td>${item.title}</td>
+                        <td>${item.quantity}</td>
+                        <td>${item.price.toFixed(2)} сом</td>
+                        <td>${item.total_price.toFixed(2)} сом</td>
+                    `;
+                    cartItemsContainer.appendChild(row);
+                });
+
+                cartModal.style.display = 'block';
+            });
+    });
+
+    closeCartBtn.addEventListener('click', () => {
+        cartModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target === cartModal) {
+            cartModal.style.display = 'none';
+        }
     });
 });
-
 
 </script>
 
