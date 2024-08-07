@@ -171,14 +171,14 @@ def get_cart_data(request):
 
     items = []
     total_price = 0
-    for item in cart.items.all():
+    for cart_item in cart.items.all():
         item_data = {
-            'id': item.id,
-            'title': item.cosmetic.title,
-            'image_url': item.cosmetic.image.url if item.cosmetic.image else '',
-            'quantity': item.quantity,
-            'price': float(item.price),
-            'total_price': float(item.price * item.quantity),
+            'id': cart_item.id,
+            'title': cart_item.cosmetic.title,
+            'image_url': cart_item.cosmetic.image.url if cart_item.cosmetic.image else '',
+            'quantity': cart_item.quantity,
+            'price': float(cart_item.price),
+            'total_price': float(cart_item.price * cart_item.quantity),
         }
         total_price += item_data['total_price']
         items.append(item_data)
@@ -211,12 +211,12 @@ def create_order(request):
             )
             order.save()
 
+            messages.success(request, f'Заказ успешно создан. С вашего баланса списано {cart.total_price} сом.')
+
             # Очищаем корзину после создания заказа
             CartItem.objects.filter(cart=cart).delete()
             cart.total_price = 0
             cart.save()
-
-            messages.success(request, f'Заказ успешно создан. С вашего баланса списано {cart.total_price} сом.')
         else:
             messages.error(request, 'На вашем балансе недостаточно средств.')
 

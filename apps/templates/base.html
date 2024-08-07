@@ -170,7 +170,7 @@ h2 {
 <body>
 
 
-    <div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade bg-white" id="templatemo_search" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="w-100 pt-1 mb-5 text-right">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -185,7 +185,6 @@ h2 {
             </form>
         </div>
     </div>
-
 
  <nav class="navbar navbar-expand-lg bg-dark navbar-light d-none d-lg-block" id="templatemo_nav_top">
         <div class="container text-light">
@@ -223,9 +222,6 @@ h2 {
                     </li>
                 {% endif %}
             </div>
-
-
-
             </div>
         </div>
     </nav>
@@ -282,26 +278,26 @@ h2 {
     </nav>
 
         <div id="cartModal" class="cart-modal">
-    <div class="cart-modal-content">
-        <span class="cart-close-btn">&times;</span>
-        <h2>Ваша корзина</h2>
-        <table class="cart-table">
-            <tbody id="cartItemsContainer">
-                <!-- Товары будут добавлены сюда динамически -->
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="4">Итого</td>
-                    <td id="cartTotal">0.00 сом</td>
-                </tr>
-            </tfoot>
-        </table>
-        <form action="{% url 'create_order' %}" method="post">
-            {% csrf_token %}
-            <button type="submit" style="background-color: green; color: white;" class="nav-link" onclick="closeCart()">&times; Купить</button>
-        </form>
+        <div class="cart-modal-content">
+            <span class="cart-close-btn">&times;</span>
+            <h2>Ваша корзина</h2>
+            <table class="cart-table">
+                <tbody id="cartItemsContainer">
+                    <!-- Items will be added here dynamically -->
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4">Итого</td>
+                        <td id="cartTotal">0.00 сом</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <form action="{% url 'create_order' %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="cart-checkout-btn" onclick="closeCart()">Купить</button>
+            </form>
+        </div>
     </div>
-</div>
 
 
 
@@ -419,109 +415,62 @@ h2 {
     <!--            всплывающие окна-->
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-    const openCartBtn = document.getElementById('openCartBtn');
-    const cartModal = document.getElementById('cartModal');
-    const closeCartBtn = cartModal.querySelector('.cart-close-btn');
+                document.addEventListener('DOMContentLoaded', function () {
+                var toasts = document.querySelectorAll('.toast');
+                toasts.forEach(function (toast) {
+                    var bsToast = new bootstrap.Toast(toast);
+                    bsToast.show();
 
-    openCartBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        cartModal.style.display = 'block';
-    });
-
-    closeCartBtn.addEventListener('click', () => {
-        cartModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-            cartModal.style.display = 'none';
-        }
-    });
-});
-// Get the modal
-var modal = document.getElementById("myModaladd");
-
-// Get the button that opens the modal
-var btn = document.getElementById("myBtnadd");
-
-
-// When the user clicks the button, open the modal
-btn.onclick = function() {
-  modal.style.display = "block";
-}
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    var toasts = document.querySelectorAll('.toast');
-    toasts.forEach(function (toast) {
-        var bsToast = new bootstrap.Toast(toast);
-        bsToast.show();
-// When the user clicks on <span> (x), close the modal
-span.onclick = function() {
-  modal.style.display = "none";
-}
-
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == modal) {
-    modal.style.display = "none";
-  }
-}
-function closeCart() {
-    const cartModal = document.getElementById('cartModal');
-    cartModal.style.display = 'none';
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const openCartBtn = document.getElementById('openCartBtn');
-    const cartModal = document.getElementById('cartModal');
-    const closeCartBtn = cartModal.querySelector('.cart-close-btn');
-    const cartItemsContainer = document.getElementById('cartItemsContainer');
-    const cartTotal = document.getElementById('cartTotal');
-    const cartItemCount = document.getElementById('cartItemCount');
-
-    openCartBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        fetch('{% url "get_cart_data" %}')
-            .then(response => response.json())
-            .then(data => {
-                cartItemsContainer.innerHTML = '';
-                cartTotal.textContent = `${data.total_price.toFixed(2)} сом`;
-                cartItemCount.textContent = data.items.length;
-
-                data.items.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><img src="${item.image_url}" alt="${item.title}" class="cart-item-img"></td>
-                        <td>${item.title}</td>
-                        <td>${item.quantity}</td>
-                        <td>${item.price.toFixed(2)} сом</td>
-                        <td>${item.total_price.toFixed(2)} сом</td>
-                    `;
-                    cartItemsContainer.appendChild(row);
+                    // Автоматически скрывать тост через 3 секунды
+                    setTimeout(function () {
+                        bsToast.hide();
+                    }, 3000); // 3000 миллисекунд = 3 секунды
                 });
+            });
+        document.addEventListener('DOMContentLoaded', () => {
+            const openCartBtn = document.getElementById('openCartBtn');
+            const cartModal = document.getElementById('cartModal');
+            const closeCartBtn = cartModal.querySelector('.cart-close-btn');
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
+            const cartTotal = document.getElementById('cartTotal');
+            const cartItemCount = document.getElementById('cartItemCount');
+
+            openCartBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                fetch('{% url "get_cart_data" %}')
+                    .then(response => response.json())
+                    .then(data => {
+                        let total = 0;
+                        cartItemsContainer.innerHTML = '';
+                        data.items.forEach(item => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td><img src="${item.image_url}" alt="${item.title}" class="cart-item-img"></td>
+                                <td>${item.title}</td>
+                                <td>${item.price} сом</td>
+                                <td>${item.quantity}</td>
+                                <td>${(item.price * item.quantity).toFixed(2)} сом</td>
+                            `;
+                            cartItemsContainer.appendChild(row);
+                            total += item.price * item.quantity;
+                        });
+                        cartTotal.textContent = total.toFixed(2) + ' сом';
+                    });
+
                 cartModal.style.display = 'block';
             });
 
-        // Автоматически скрывать тост через 3 секунды
-        setTimeout(function () {
-            bsToast.hide();
-        }, 3000); // 3000 миллисекунд = 3 секунды
-    });
+            closeCartBtn.addEventListener('click', () => {
+                cartModal.style.display = 'none';
+            });
 
-    closeCartBtn.addEventListener('click', () => {
-        cartModal.style.display = 'none';
-    });
-
-    window.addEventListener('click', (e) => {
-        if (e.target === cartModal) {
-            cartModal.style.display = 'none';
-        }
-    });
-});
-
-</script>
+            window.addEventListener('click', (e) => {
+                if (e.target === cartModal) {
+                    cartModal.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
 
 
