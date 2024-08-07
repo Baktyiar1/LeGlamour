@@ -273,8 +273,7 @@ textarea:focus {
         <div class="row">
             <div class="col-lg-5 mt-5">
                 <div class="card mb-3">
-                    <img class="card-img img-fluid" src="{{ cosmetic.image.url }}" alt="Изображение продукта" id="product-detail">
-
+                    <img class="card-img img-fluid" src="{{ cosmetic.image.url }}" alt="Product image" id="product-detail">
                 </div>
             </div>
             <!-- col end -->
@@ -282,7 +281,7 @@ textarea:focus {
                 <div class="card">
                     <div class="card-body">
 
-                        {% if not request.user.status == 2 or request.user.is_admin %}
+                        {% if request.user.status == 2 or request.user.is_admin %}
                         <div class="container">
                         <!-- Buttons to open modals -->
                               <div class="button-group">
@@ -360,10 +359,15 @@ textarea:focus {
                            </div>
                         {% endif %}
 
+
+
+
+                        <form action="{% url 'add_to_cart' cosmetic.id %}" method="POST">
+                            {% csrf_token %}
                         <h1 class="h2">{{ cosmetic.title }}</h1>
-                        <p class="h3 py-2">Цена:    {{ cosmetic.price }} сом</p>
-                        <p class="h3 py-2">Категория:    {{ cosmetic.category }}</p>
-                        <p class="py-2">
+                        <p class="h3 py-2">Цена: <input type="hidden" name="price" value="{{ cosmetic.price }}">{{ cosmetic.price }} сом</p>
+                            <p class="h3 py-2">Категория: {{ cosmetic.category }}</p>
+                            <p class="py-2">
                             <i class="fa fa-star text-warning"></i>
                             <i class="fa fa-star text-warning"></i>
                             <i class="fa fa-star text-warning"></i>
@@ -380,23 +384,21 @@ textarea:focus {
                         </ul>
 
                         <form action="" method="GET">
-                            <input type="hidden" name="product-title" value="{{ cosmetic.title }}">
+                            <input type="hidden" name="title" value="{{ cosmetic.title }}">
+
                             <div class="row">
                                 <div class="col-auto">
                                     <ul class="list-inline pb-3">
                                         <li class="list-inline-item text-right">
                                             Quantity
-                                            <input type="hidden" name="product-quantity" id="product-quantity" value="1">
+                                            <input type="number" name="quantity" id="quantity" value="1">
                                         </li>
-                                        <li class="list-inline-item"><button type="button" class="btn btn-success" id="btn-minus">-</button></li>
-                                        <li class="list-inline-item"><span class="badge bg-secondary" id="var-value">1</span></li>
-                                        <li class="list-inline-item"><button type="button" class="btn btn-success" id="btn-plus">+</button></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="row pb-3">
                                 <div class="col d-grid">
-                                    <button type="submit" class="btn btn-success btn-lg" name="submit" value="buy"style="width:295px;">Положить товар в корзину</button>
+                                    <button type="submit" class="btn btn-success btn-lg" value="buy" style="width:295px;">Положить товар в корзину</button>
                                 </div>
                             </div>
                         </form>
@@ -521,6 +523,11 @@ window.onclick = function(event) {
 
 
 
+<!-- Bootstrap CSS -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 
 
 </body>
